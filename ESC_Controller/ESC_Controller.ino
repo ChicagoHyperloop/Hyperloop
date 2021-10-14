@@ -41,7 +41,7 @@ void loop() {
   }
 
   // Set speed (1-byte restriction)
-  if (speed >= 0 && speed <= 180) {
+  if (speed >= -180 && speed <= 180) {
     ESC.write(speed);
     Serial.println(speed);
   }
