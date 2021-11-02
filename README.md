@@ -8,3 +8,5 @@ to upload to arduino
 
 
 arduino-cli upload -b arduino:avr:uno ardPiComTest --port /dev/ttyACM0
+
+obtain Fresh batteries
