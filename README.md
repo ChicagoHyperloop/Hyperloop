@@ -1,5 +1,7 @@
 Some kinda sorta weird commands
 to compile before upload
+
+
 arduino-cli compile -b arduino:avr:uno ardPiComTest
 
 to upload to arduino
