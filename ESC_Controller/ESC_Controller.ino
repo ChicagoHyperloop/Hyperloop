@@ -17,7 +17,7 @@ int speed = 0;
  */
 void setup() {
   // Arm ESC
-  ESC.attach(speedControlPin, 1000, 2000);
+  ESC.attach(speedControlPin, 0, 2400);
 
   // Attach serial outputs
   Serial.begin(9600);
