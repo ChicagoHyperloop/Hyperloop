@@ -16,47 +16,59 @@ def write (arduinoToWrite, data):
 	time.sleep(.05)
 
 def read (arduinoToRead):
-	global timeMS
+	#global timeMS
 
 	thingRead = arduinoToRead.readline().decode(encoding)
 
 	size = len(thingRead)
+
+	#remove line endings
 	thingRead = thingRead[:size - 2]
 
-	if (thingRead != "" and thingRead != "setup"):
-		timeMS = int(thingRead)
-
 	return thingRead
-
+'''
 def readingThreadFunc():
+
+	global timeMS
 
 	while True:
 		thingRead = read(arduino)
 
-		if (thingRead == ""):
+		if (thingRead == "" or thingRead == "setup"):
 			#print("slepRead")
 			time.sleep(.05)
-			pass
 		else:
 			print("read actual")
-			timeMS = thingRead
+			timeMS = int(thingRead)
 			print(thingRead)
 
 #TODO: name these better
+'''
 def reactiveFunc():
+
+	global timeMS
+
+	timeMS = ToRead.readline().decode(encoding)
+	size = len(timeMS)
+
+	timeMS = timeMS[:size - 2]
+
 	while True:
-		print(timeMS)
+		#print(timeMS)
 		if (timeMS > 1500):
 			print("write react")
 			write(arduino, "L:1000")
+			#to stop constant upload
+			time.sleep(1)
 		else:
 			#print("slep react")
 			time.sleep(.05)
-
-myReadThread = threading.Thread(target=readingThreadFunc, args =())
+'''
+myReadThread = threading.Thread(target=readingThreadFunc, args = ())
 myReadThread.start()
+'''
 
-myReactiveThread = threading.Thread(target=reactiveFunc, args=())
+myReactiveThread = threading.Thread(target=reactiveFunc, args = ())
 myReactiveThread.start()
 
 while True:

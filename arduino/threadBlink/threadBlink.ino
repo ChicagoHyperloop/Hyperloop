@@ -26,6 +26,8 @@ void setup() {
 //fake sensor data is timeSec*2 which is dumb but o well
 
 
+//we need to upgrade this to fake threading on the arduino as well
+
 // I just hope this fucking works
 void loop() {
 
