@@ -50,18 +50,38 @@ def reactiveFunc():
 
 	while True:
 
+		ogTimeMS = timeMS
+
+		timeMS = read(arduino)
+
+		print("ard: ")
+		print(timeMS)
+
+		size = len(timeMS)
+
+		if (timeMS == "setup"):
+			timeMS = ogTimeMS
+		if (size != 0 and type(timeMS) == str):
+			#timeMS = timeMS[:size - 2]
+			timeMS = int(timeMS)
+		else:
+			timeMS = ogTimeMS
+
+		print("timeMS: ")
+		print(timeMS)
+
+		#print(timeMS)
 		if (timeMS > 1500):
 			print("write react")
 			write(arduino, "L:1000")
 			#to stop constant upload
 			time.sleep(1)
 		else:
-			print("slep react")
+			#print("slep react")
 			time.sleep(.05)
 
-
-myReadThread = threading.Thread(target=readingThreadFunc, args = ())
-myReadThread.start()
+#myReadThread = threading.Thread(target=readingThreadFunc, args = ())
+#myReadThread.start()
 
 myReactiveThread = threading.Thread(target=reactiveFunc, args = ())
 myReactiveThread.start()
