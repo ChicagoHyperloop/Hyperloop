@@ -26,7 +26,7 @@ def read (arduinoToRead):
 	thingRead = thingRead[:size - 2]
 
 	return thingRead
-'''
+
 def readingThreadFunc():
 
 	global timeMS
@@ -43,15 +43,22 @@ def readingThreadFunc():
 			print(thingRead)
 
 #TODO: name these better
-'''
+
 def reactiveFunc():
 
 	global timeMS
 
-	timeMS = ToRead.readline().decode(encoding)
+	ogTimeMS = timeMS
+
+	timeMS = read(arduino)
+
+	#timeMS = ToRead.readline().decode(encoding)
 	size = len(timeMS)
 
-	timeMS = timeMS[:size - 2]
+	if (size != 0):
+		timeMS = int(timeMS[:size - 2])
+	else:
+		timeMS = ogTimeMS
 
 	while True:
 		#print(timeMS)
@@ -63,10 +70,10 @@ def reactiveFunc():
 		else:
 			#print("slep react")
 			time.sleep(.05)
-'''
+
 myReadThread = threading.Thread(target=readingThreadFunc, args = ())
 myReadThread.start()
-'''
+
 
 myReactiveThread = threading.Thread(target=reactiveFunc, args = ())
 myReactiveThread.start()
