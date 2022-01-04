@@ -1,73 +1,117 @@
 //this sketch is a test to fancy blink an LED on an arduino
-//this tests if we can thread arduinos on the rpi
-//programmed on WSLS(ubuntu) ssh into Rpi and ubuntu ssh
+//this is part of the request based model client side
+//programmed on WSLS(ubuntu) ssh into Rpi3B and ubuntu ssh
 
 //this program is a modified blink
 //there is a fake sensor that will be sending data
 //there is a controllable object (2xLEDs)
-//the rpi should be able to handle sending and recieving of LED data
-//receiving "L:"+some string, will change blink status
-//receiving "S:"+some string, will change sensor data status
-//full scale test will happen on multiple arduino
 
-// time in seconds
-//int timeSec = 1;
+const int TIMEOUT = 3000;
+
+unsigned long lastComTime = 0;
+unsigned long loopStart = 0;
+unsigned long loopEnd = 0; 
+unsigned long lastLEDChange = 0;
+
 int timeMS = 500;
+int LEDState = LOW;
 
 void setup() {
 
-	Serial.begin(9600);
+	// hardware setup
 	pinMode(13,OUTPUT);
-	Serial.println("setup");
+
+	//Communications setup
+	Serial.begin(9600);
+
+	// wait for Serial port to connect
+	while (!Serial) {
+		; // this was there to begin with in the code I copypasta
+	}
+
+	while (true) { // wait for Begin command
+		
+		if (Serial.available > 0 && Serial.read() == "B:") {
+
+			Serial.println("Begun:");
+			break;
+		
+		}
+		
+	}
 
 }
 
 
-//fake sensor data is timeSec*2 which is dumb but o well
+void EStop(){
 
+	while (true) {
+		
+		Serial.println("Stopped:");
+		delay(10000);
+	
+	}
 
-//we need to upgrade this to fake threading on the arduino as well
+}
 
 // I just hope this fucking works
 void loop() {
 
-	//this part handles input data
-	//TODO: upgrade to serial Event
-	if (Serial.available() > 0) {
-		
-		String inData = Serial.readString();
+	loopStart = millis();
 
-		char firstChar = inData.charAt(0);
+	if ((millis() - lastComTime) > TIMEOUT) {
 
-		if (firstChar == 'L') {
-
-			inData.remove(0,2);
-			timeMS = inData.toInt();
-
-
-		} else if (firstChar == 'S'){
-
-			Serial.println(timeMS);
-
-		} else {
-
-			Serial.println("Shiiiiit");		
-
-		}
+		//send Emergency signal
+		Serial.println("ES:");
+		EStop();
 
 	}
 
+	// recieved Command
+	if (Serial.available() > 0) {
+		
+		lastComTime = millis();
+		
+		String inData = Serial.readString();
 
+		int colonIndex = indexOf(':',0);
+		String prepend = inData.subString(0,colonIndex - 1);
+		String data = inData.subString(colonIndex + 1);
+
+		if (prepend == "ES") {
+
+			EStop();
+
+		} else if (prepend == "S") { // Status update
+
+			// this is supposed to be command for status update
+			// will include temp and speed
+			// as well as any other regularly sending sensor data
+
+		} else if (prepend == "L") { // do somn with LEDS
+
+			timeMS = int(data);
+			
+		} else {
+			// arduino doesnt understand now die
+			Serial.println("ES:");
+			EStop();
+		}
+
+
+	}
+
+	// actually do hardware stuff now
 	// executes 1 frame of thing
-	digitalWrite(13,HIGH);
-	timeMS+=50;
-	//Serial.print("timeMS: ");
-	Serial.println(timeMS);
-	delay(timeMS);
 
-	digitalWrite(13,LOW);
-	delay(timeMS);
+	if (millis() - lastLEDChange > timeMS) {
 
-	//Serial.println("one blink past");
+		LEDState = !LEDState;
+		digitalWrite(13,LEDState);
+		timeMS += 50;
+	}
+
+	// TODO: we can find loop times with this, if its too low the arduino commit suicide
+	loopEnd = millis();
 
 }
