@@ -16,7 +16,11 @@ def write (arduinoToWrite, data):
 	time.sleep(.05)
 
 def read (arduinoToRead):
-	#global timeMS
+	# this function does have a buffer of sorts
+	# it reads the next unread line out of the arduino
+	# meaning that if you dont read for 10s you will get the last unread line out of the ard
+	# which is stale data
+	# to get to new data, keep reading until it dumps fresh data
 
 	thingRead = arduinoToRead.readline().decode(encoding)
 
@@ -108,10 +112,12 @@ def reactiveFunc():
 			time.sleep(.05)
 '''
 
-myReactiveThread = threading.Thread(target=reactiveFunc, args = ())
-myReactiveThread.start()
+#myReactiveThread = threading.Thread(target=reactiveFunc, args = ())
+#myReactiveThread.start()
 
 while True:
-	time.sleep(.5)
+	data = read(arduino)
+	print(data)
+#	time.sleep(.5)
 
 print("endTest")
