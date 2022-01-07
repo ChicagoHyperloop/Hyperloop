@@ -77,7 +77,7 @@ def writingThreadFunc():
 			print("slep react")
 			time.sleep(.05)
 '''
-
+'''
 myWritingThread = threading.Thread(target=writingThreadFunc, args = ())
 myWritingThread.start()
 
@@ -86,10 +86,19 @@ myReadThread.start()
 
 #myReactiveThread = threading.Thread(target=reactiveFunc, args = ())
 #myReactiveThread.start()
-
+'''
+time.sleep(2)
+i = 0
 while True:
-	time.sleep(.5)
 
+	data = input("send word ")
+	write(arduino, data)
+
+	while i < 50:
+		print(read(arduino))
+		i += 1
+
+	i = 0
 print("endTest")
 
 

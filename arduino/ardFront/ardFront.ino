@@ -16,12 +16,32 @@ void setup() {
 
 	Serial.begin(9600);
 	pinMode(13,OUTPUT);
-	Serial.println("setup");
 
+	//if (Serial.available() > 0) {
+	//    Serial.println("setup");
+	//    digitalWrite(13, HIGH);
+	//}
 }
 
 
 void loop() {
+
+    String word = Serial.readString();
+    Serial.println(word);
+
+    if (word == "O:") {
+
+        digitalWrite(13, HIGH);
+
+    } else if (word == "F") {
+
+        digitalWrite(13, LOW);
+
+    }
+
+    delay(100);
+/*
+
 
 	if (Serial.available() > 0) {
 
@@ -37,5 +57,5 @@ void loop() {
 	delay(1000 * timeSec);
 
 	Serial.println("one blink past");
-
+*/
 }
