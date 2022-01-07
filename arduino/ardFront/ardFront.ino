@@ -8,7 +8,6 @@
 //the delay between blinks to timesec
 //it also tests client receive by sending data back to the rpi
 
-
 // time in seconds
 int timeSec = 1;
 
@@ -17,12 +16,32 @@ void setup() {
 	Serial.begin(9600);
 	pinMode(13,OUTPUT);
 
-	//if (Serial.available() > 0) {
-	//    Serial.println("setup");
-	//    digitalWrite(13, HIGH);
-	//}
-}
+    // begin Codes
+	while (true) {
 
+	    String word = Serial.readString();
+        Serial.println(word);
+
+        if (word == "B:") {
+
+            digitalWrite(13, HIGH);
+            Serial.println("LED:ON");
+            delay(500);
+            digitalWrite(13, LOW);
+            Serial.println("LED:OFF");
+            delay(500);
+            digitalWrite(13, HIGH);
+            Serial.println("LED:ON");
+            delay(500);
+            digitalWrite(13, LOW);
+            Serial.println("LED:OFF");
+
+            break;
+
+        }
+
+	}
+}
 
 void loop() {
 
