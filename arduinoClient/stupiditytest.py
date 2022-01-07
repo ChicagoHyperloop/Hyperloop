@@ -29,8 +29,27 @@ def read (arduinoToRead):
 
 def readingThreadFunc():
 
-	global timeMS
+#	global timeMS
 
+	while (True):
+
+		print("read: " + read(arduino))
+
+
+#testing testing
+
+def writingThreadFunc():
+
+	while (True):
+
+		write(arduino, "Test")
+		print("writing")
+		time.sleep(.5)
+
+
+
+
+'''
 	while True:
 		thingRead = read(arduino)
 
@@ -42,12 +61,11 @@ def readingThreadFunc():
 			timeMS = int(thingRead)
 			print(thingRead)
 
+'''
+
 #TODO: name these better
 
-def reactiveFunc():
-
-	global timeMS
-
+'''
 	while True:
 
 		if (timeMS > 1500):
@@ -58,15 +76,22 @@ def reactiveFunc():
 		else:
 			print("slep react")
 			time.sleep(.05)
+'''
 
+myWritingThread = threading.Thread(target=writingThreadFunc, args = ())
+myWritingThread.start()
 
 myReadThread = threading.Thread(target=readingThreadFunc, args = ())
 myReadThread.start()
 
-myReactiveThread = threading.Thread(target=reactiveFunc, args = ())
-myReactiveThread.start()
+#myReactiveThread = threading.Thread(target=reactiveFunc, args = ())
+#myReactiveThread.start()
 
 while True:
-	time.sleep(.05)
+	time.sleep(.5)
 
 print("endTest")
+
+
+# testing testing
+

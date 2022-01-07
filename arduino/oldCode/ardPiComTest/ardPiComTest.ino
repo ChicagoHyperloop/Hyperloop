@@ -27,6 +27,7 @@ void loop() {
 
 		timeSec = Serial.parseInt();
 		Serial.println("delay changed: " + timeSec);
+	
 	}
 	
 	digitalWrite(13,HIGH);
