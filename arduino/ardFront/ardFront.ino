@@ -16,6 +16,8 @@ void setup() {
 	Serial.begin(9600);
 	pinMode(13,OUTPUT);
 
+    Serial.println("READY:");
+
     // begin Codes
 	while (true) {
 
@@ -48,35 +50,18 @@ void loop() {
     String word = Serial.readString();
     Serial.println(word);
 
-    if (word == "O:") {
+    if (word == "LED:ON") {
 
         digitalWrite(13, HIGH);
-        Serial.println("LED:ON");
+        Serial.println("LEDstat:ON");
 
-    } else if (word == "F:") {
+        delay(1000);
 
-        digitalWrite(13, LOW);
-        Serial.println("LED:OFF");
+        digitalWrite(13,LOW);
+        Serial.println("LEDstat:OFF");
 
     }
 
     delay(100);
-/*
 
-
-	if (Serial.available() > 0) {
-
-		timeSec = Serial.parseInt();
-		Serial.println("delay changed: " + timeSec);
-	
-	}
-	
-	digitalWrite(13,HIGH);
-	delay(1000 * timeSec);
-
-	digitalWrite(13,LOW);
-	delay(1000 * timeSec);
-
-	Serial.println("one blink past");
-*/
 }

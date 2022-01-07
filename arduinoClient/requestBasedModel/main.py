@@ -1,4 +1,5 @@
 #request based model for arduino-pi communications
+'''
 import time
 from client import arduino
 #import arduino from client
@@ -10,47 +11,87 @@ time.sleep(.1)
 
 # wait for ready signal from arduino
 '''
-while (True):
-	read = ardFront.read()
-	print("Rear sends:            " + read)
 
-	if (read == "Ready1:" or read == "Ready2:"):
-		time.sleep(.1)
-		break;
-'''
 #ardFront.begin()
-ardFront.begin()
-time.sleep(.1)
+#import logging
+import serial
+import time
+import threading
+#TODO: logging to file
 
-isRunning = True
+arduino = serial.Serial(port = "/dev/ttyACM0", baudrate = 9600, timeout = .1)
 
-while (isRunning):
+encoding = 'utf-8'
 
-	#ardBack.basicSensorRefresh()
+timeMS = -1
 
-	#time.sleep(.1)
+def write (arduinoToWrite, data):
 
-	dataBack = ardFront.read()
+	arduinoToWrite.write(bytes(data, encoding))
+	time.sleep(.05)
 
-	print("Rear sends:     " + dataBack)
+def read (arduinoToRead):
+	#global timeMS
 
-#	print("waiting for data")
+	thingRead = arduinoToRead.readline().decode(encoding)
 
-#	while (dataBack == ""):
-	'''
-		newReadFront = ardFront.read()
-		print("Front:     " + dataFront)
+	size = len(thingRead)
 
-		if (newReadFront != "" and dataFront == ""):
+	#remove line endings
+	thingRead = thingRead[:size - 2]
 
-			print("dataFront = " + newReadFront)
-			dataFront = newReadFront
-		
-		newReadBack = ardBack.read()
-		print("Rear sends:       " + dataBack)
+	return thingRead
 
-		if (newReadBack != "" and dataBack == ""):
-			print("dataBack = " + newReadBack)
-			dataBack = newReadBack
-	'''
-	#print("loop reset")
+def readingThreadFunc():
+
+#	global timeMS
+
+	while (True):
+
+		print("read: " + read(arduino))
+
+def writingThreadFunc():
+
+	while (True):
+
+		write(arduino, "Test")
+		print("writing")
+		time.sleep(.5)
+
+#TODO: name these better
+
+#time.sleep(2)
+i = 0
+
+status = "NOT READY"
+while (True) :
+
+	data = read(arduino)
+	print(data)
+
+	if (data == "READY:"):
+		time.sleep(1)
+		write(arduino, "B:")
+		break
+
+time.sleep(2)
+write(arduino, "LED:ON")
+
+while True:
+
+	#data = input("send word ")
+	#write(arduino, data)
+
+	data = read(arduino)
+	print(data)
+
+	if (data == "LEDstat:OFF"):
+		time.sleep(1)
+		write(arduino, "LED:ON");
+
+	print(data)
+
+print("endTest")
+
+# testing testing
+
