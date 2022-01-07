@@ -87,8 +87,10 @@ myReadThread.start()
 #myReactiveThread = threading.Thread(target=reactiveFunc, args = ())
 #myReactiveThread.start()
 '''
+
 time.sleep(2)
 i = 0
+
 while True:
 
 	data = input("send word ")
@@ -99,8 +101,8 @@ while True:
 		i += 1
 
 	i = 0
-print("endTest")
 
+print("endTest")
 
 # testing testing
 
