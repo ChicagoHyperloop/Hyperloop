@@ -19,29 +19,40 @@ import time
 import threading
 #TODO: logging to file
 
-arduino = serial.Serial(port = "/dev/ttyACM0", baudrate = 9600, timeout = .1)
+class ardClient:
 
-encoding = 'utf-8'
+	def __init__(self, serialPath, baudRate = 9600, timeOut = .1, encoding = 'utf-8'):
 
-timeMS = -1
+		self.serialPort = serial.Serial(port=serialPath, baudrate=baudRate, timeout=timeOut)
 
-def write (arduinoToWrite, data):
+		self.isReady = False
+		self.baudRate = baudRate
+		self.TIMEOUT = .1
+		self.serialPath = serialPath
+		self.encoding = encoding
 
-	arduinoToWrite.write(bytes(data, encoding))
-	time.sleep(.05)
+	def setIsReady(self, isReady):
+		self.isReady = isReady
 
-def read (arduinoToRead):
-	#global timeMS
+	def setEncoding(self, encoding):
+		self.encoding = encoding
 
-	thingRead = arduinoToRead.readline().decode(encoding)
+	def write(self, data):
 
-	size = len(thingRead)
+		self.serialPort.write(bytes(data, self.encoding))
 
-	#remove line endings
-	thingRead = thingRead[:size - 2]
+	def read(self):
 
-	return thingRead
+		thingRead = self.serialPort.readline().decode(self.encoding)
 
+		size = len(thingRead)
+
+		# remove line endings
+		thingRead = thingRead[:size - 2]
+
+		return thingRead
+
+'''
 def readingThreadFunc():
 
 #	global timeMS
@@ -57,37 +68,42 @@ def writingThreadFunc():
 		write(arduino, "Test")
 		print("writing")
 		time.sleep(.5)
+'''
 
 #TODO: name these better
 
 #time.sleep(2)
+
 i = 0
 
 status = "NOT READY"
+
+ardFront = ardClient("/dev/ttyACM0")
+
 while (True) :
 
-	data = read(arduino)
+	data = ardFront.read()
 	print(data)
 
 	if (data == "READY:"):
 		time.sleep(1)
-		write(arduino, "B:")
+		ardFront.write("B:")
 		break
 
 time.sleep(2)
-write(arduino, "LED:ON")
+ardFront.write("LED:ON")
 
 while True:
 
 	#data = input("send word ")
 	#write(arduino, data)
 
-	data = read(arduino)
+	data = ardFront.read()
 	print(data)
 
 	if (data == "LEDstat:OFF"):
 		time.sleep(1)
-		write(arduino, "LED:ON");
+		ardFront.write("LED:ON")
 
 	print(data)
 
