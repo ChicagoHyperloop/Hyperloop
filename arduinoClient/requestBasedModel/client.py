@@ -1,6 +1,7 @@
 #import logging
 import serial
 import time
+import asyncio
 #import threading
 #TODO: logging to file
 
@@ -35,6 +36,29 @@ class ardClient:
 		thingRead = thingRead[:size - 2]
 
 		return thingRead
+
+	async def waitToReady(self):
+
+		while True:
+
+			data = self.read()
+			print(self.serialPath + " :: " + data)
+
+			if (data == "READY:"):
+
+				self.write("B:")
+				break
+
+			await asyncio.sleep(.1)
+
+	async def run(self):
+
+		data = self.read()
+		print(self.serialPath + " :: " + data)
+
+		if data == "LEDstat:OFF":
+			await asyncio.sleep(.1)
+			self.write("LED:ON")
 
 	# untested ------------------------------------------------------------------------------------>>>>
 	def sendCommand(self, prepend = "", data = ""):

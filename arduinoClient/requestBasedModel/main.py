@@ -13,6 +13,8 @@ time.sleep(.1)
 
 # ardFront.begin()
 # import logging
+import asyncio
+
 import serial
 import time
 import threading
@@ -25,54 +27,36 @@ from client import ardClient
 
 # time.sleep(2)
 
-i = 0
+async def main():
 
-status = "NOT READY"
+	i = 0
 
-ardFront = ardClient("/dev/ttyACM0")
-ardBack = ardClient("/dev/ttyACM1")
+	status = "NOT READY"
 
-while True:
+	ardFront = ardClient("/dev/ttyACM0")
+	ardBack = ardClient("/dev/ttyACM1")
 
-	data = ardFront.read()
-	print("Front: " + data)
+	await ardFront.waitToReady()
+	await ardBack.waitToReady()
 
-	if (data == "READY:"):
-		time.sleep(1)
-		ardFront.write("B:")
-		break
+	time.sleep(2)
 
-while True:
+	ardFront.write("LED:ON")
+	ardBack.write("LED:ON")
 
-	data = ardBack.read()
-	print("Back: " + data)
+	while True:
 
-	if (data == "READY:"):
-		time.sleep(1)
-		ardBack.write("B:")
-		break
+		await asyncio.gather(ardFront.run(), ardBack.run())
 
-time.sleep(2)
 
-ardFront.write("LED:ON")
-ardBack.write("LED:ON")
-
-while True:
-
-	dataFront = ardFront.read()
-	print("Front: " + dataFront)
-
-	dataBack = ardBack.read()
-	print("Back: " + dataBack)
-
-	if dataFront == "LEDstat:OFF":
-		time.sleep(1)
-		ardFront.write("LED:ON")
-
-	if dataBack == "LEDstat:OFF":
-		time.sleep(1)
-		ardBack.write("LED:ON")
 
 print("endTest")
+
+if __name__ == "__main__":
+
+	s = time.perf_counter()
+	asyncio.run(main())
+	elapsed = time.perf_counter() - s
+	print(f"{__file__} executed in {elapsed:0.2f} seconds.")
 
 # testing testing
