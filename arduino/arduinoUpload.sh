@@ -10,10 +10,10 @@ echo "front upload"
 arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:uno ardFront
 
 #arduino Back compile and upload
-#echo "back compile"
-#arduino-cli compile --fqbn arduino:avr:uno ardBack
-#echo "back upload"
-#arduino-cli upload -p /dev/ttyACM1 --fqbn arduino:avr:uno ardBack
+echo "back compile"
+arduino-cli compile --fqbn arduino:avr:uno ardBack
+echo "back upload"
+arduino-cli upload -p /dev/ttyACM1 --fqbn arduino:avr:uno ardBack
 
 #arduino power compile and upload
 #echo "power compile"

@@ -4,48 +4,52 @@ import time
 #import threading
 #TODO: logging to file
 
-class arduino:
+class ardClient:
 
-	def __init__(self, path, encoding = 'utf-8', baud = 9600, TIMEOUT = .1):
+	def __init__(self, serialPath, baudRate=9600, timeOut=.1, encoding='utf-8'):
+		self.serialPort = serial.Serial(port=serialPath, baudrate=baudRate, timeout=timeOut)
 
-		self.comPort = serial.Serial(port = path, baudrate = baud, timeout = TIMEOUT)
-
-		self.path = path
+		self.isReady = False
+		self.baudRate = baudRate
+		self.TIMEOUT = .1
+		self.serialPath = serialPath
 		self.encoding = encoding
-		self.baud = baud
-		self.timeout = TIMEOUT
 
-		self.comPort.flush()
+	# self.comPort.flush()
 
-	def write (self, data):
+	def setIsReady(self, isReady):
+		self.isReady = isReady
 
-		self.comPort.write(bytes(data, self.encoding))
+	def setEncoding(self, encoding):
+		self.encoding = encoding
 
-	def read (self):
+	def write(self, data):
+		self.serialPort.write(bytes(data, self.encoding))
 
-		#global timeMS
-		thingRead = self.comPort.readline().decode(self.encoding)
+	def read(self):
+		thingRead = self.serialPort.readline().decode(self.encoding)
+
+		size = len(thingRead)
 
 		# remove line endings
-		size = len(thingRead)
 		thingRead = thingRead[:size - 2]
 
 		return thingRead
 
-
+	# untested ------------------------------------------------------------------------------------>>>>
 	def sendCommand(self, prepend = "", data = ""):
 		send = prepend + ":" + data
 		self.write(send)
 		print("sending: " + send)
 
 	def begin(self):
-		self.sendCommand(prepend = "B")
+		self.sendCommand(prepend="B")
 
 	def EStop(self):
-		self.sendCommand(prepend = "ES")
+		self.sendCommand(prepend="ES")
 
 	def LEDchange(self):
-		self.sendCommand(prepend = "L")
+		self.sendCommand(prepend="L")
 
 	def basicSensorRefresh(self):
-		self.sendCommand(prepend = "S")
+		self.sendCommand(prepend="S")
