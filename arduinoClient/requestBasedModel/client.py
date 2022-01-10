@@ -1,4 +1,4 @@
-#import logging
+import logging
 import serial
 import time
 import asyncio
@@ -8,6 +8,9 @@ import asyncio
 class ardClient:
 
 	def __init__(self, serialPath, baudRate=9600, timeOut=.1, encoding='utf-8'):
+
+		self.logger = logging.getLogger('Hyperlogger')
+		# self.comPort.flush()
 		self.serialPort = serial.Serial(port=serialPath, baudrate=baudRate, timeout=timeOut)
 
 		self.isReady = False
@@ -16,7 +19,11 @@ class ardClient:
 		self.serialPath = serialPath
 		self.encoding = encoding
 
-	# self.comPort.flush()
+		self.logger.info( "init" +
+			"BAUD: " + str(self.baudRate) + " " +
+			"TIMEOUT: " + str(self.TIMEOUT) + " " +
+			"PATH: " + self.serialPath + " " +
+			"Encoding: " + self.encoding + " ")
 
 	def setIsReady(self, isReady):
 		self.isReady = isReady
@@ -26,16 +33,24 @@ class ardClient:
 
 	def write(self, data):
 		self.serialPort.write(bytes(data, self.encoding))
+		self.logger.info("Sending " + self.serialPath + data)
 
 	def read(self):
-		thingRead = self.serialPort.readline().decode(self.encoding)
+		data = self.serialPort.readline().decode(self.encoding)
 
-		size = len(thingRead)
+		size = len(data)
 
 		# remove line endings
-		thingRead = thingRead[:size - 2]
+		data = data[:size - 2]
 
-		return thingRead
+		self.logger.info("read " + self.serialPath + "  "+ data)
+
+		return data
+
+	def sendCommand(self, prepend = "", data = ""):
+		send = prepend + ":" + data
+		self.write(send)
+		print("sending: " + send)
 
 	async def waitToReady(self):
 
@@ -46,7 +61,7 @@ class ardClient:
 
 			if (data == "READY:"):
 
-				self.write("B:")
+				self.sendCommand(prepend="B")
 				break
 
 			await asyncio.sleep(.1)
@@ -58,13 +73,10 @@ class ardClient:
 
 		if data == "LEDstat:OFF":
 			await asyncio.sleep(.1)
-			self.write("LED:ON")
+			#self.write("LED:ON")
+			self.sendCommand(prepend="LED", data="ON")
 
 	# untested ------------------------------------------------------------------------------------>>>>
-	def sendCommand(self, prepend = "", data = ""):
-		send = prepend + ":" + data
-		self.write(send)
-		print("sending: " + send)
 
 	def begin(self):
 		self.sendCommand(prepend="B")

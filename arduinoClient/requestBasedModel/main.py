@@ -12,32 +12,31 @@ time.sleep(.1)
 '''
 
 # ardFront.begin()
-# import logging
+import sys
+import logging
 import asyncio
-
-import serial
 import time
-import threading
-
 from client import ardClient
 
-# TODO: logging to file
+logFilePath = "../../logs/" + str(sys.argv[1]) + "/logs.txt"
+print("logging in: " + logFilePath)
 
-# TODO: name these better
+logger = logging.getLogger('Hyperlogger')
+logger.setLevel(logging.DEBUG)
+f_handler = logging.FileHandler(logFilePath)
+f_handler.setLevel(logging.DEBUG)
+f_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+f_handler.setFormatter(f_format)
+logger.addHandler(f_handler)
 
-# time.sleep(2)
+logger.info("--------------------------------------args: " + str(sys.argv[1]))
 
 async def main():
-
-	i = 0
-
-	status = "NOT READY"
 
 	ardFront = ardClient("/dev/ttyACM0")
 	ardBack = ardClient("/dev/ttyACM1")
 
-	await ardFront.waitToReady()
-	await ardBack.waitToReady()
+	await asyncio.gather(ardFront.waitToReady(), ardBack.waitToReady())
 
 	time.sleep(2)
 
@@ -47,10 +46,6 @@ async def main():
 	while True:
 
 		await asyncio.gather(ardFront.run(), ardBack.run())
-
-
-
-print("endTest")
 
 if __name__ == "__main__":
 
