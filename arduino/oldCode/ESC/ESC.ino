@@ -21,7 +21,8 @@ void setup() {
 
   // Attach serial outputs
   Serial.begin(9600);
-  while (!Serial);
+  while (!Serial)
+    ;
   Serial.println("Speed 0 to 180");
 }
 

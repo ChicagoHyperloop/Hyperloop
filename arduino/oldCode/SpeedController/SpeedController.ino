@@ -33,7 +33,7 @@ unsigned long prevAdjustTime;
  * Initialize variables and begin serial output
  */
 void setup() {
-    // Begin speed output, desired speed input
+  // Begin speed output, desired speed input
   Serial.begin(115200);
   attachInterrupt(0, revolutionSensed, RISING);
   ESC.attach(speedControlPin, 1000, 2000);
@@ -60,7 +60,7 @@ void loop() {
   // Get current time and revolutions prior to calculation to prevent
   // changes between calculation steps
   currTime = millis();
-  
+
   // Only calculate when exceeding 100 rotations and 500 ms have passed
   if (revolutions >= 80 && (currTime - prevTime) > 400) {
     float newRpm = ((revolutions) / (currTime - prevTime));
@@ -104,9 +104,7 @@ void loop() {
  * revolutionSensed
  * Called when hall effect sensor gets activated
  */
-void revolutionSensed() {
-  revolutions++;
-}
+void revolutionSensed() { revolutions++; }
 
 /**
  * outputMotorData
@@ -133,7 +131,6 @@ void outputMotorData(int rev, float rpm) {
  * Accepts user input from serial to set desired speed
  */
 void acceptMotorDesiredSpeed() {
-  
   // Input connection successful
   if (Serial.available() > 0) {
     int requestedSpeed = Serial.parseInt();
@@ -141,14 +138,16 @@ void acceptMotorDesiredSpeed() {
     // Validate speed (max KPH)
     if (requestedSpeed > 0 && requestedSpeed < 200) {
       desiredSpeed = requestedSpeed;
-      Serial.println("------------ DESIRED SPEED ACCEPTED: " + String(desiredSpeed) + " ------------");
+      Serial.println("------------ DESIRED SPEED ACCEPTED: " +
+                     String(desiredSpeed) + " ------------");
     } else if (requestedSpeed == -1) {
       ESC.write(0);
       desiredSpeed = 0;
       outputESC = LOWEST_OPERATING_SPEED;
       Serial.println("------------ MOTOR STOP RECEIVED ------------");
     } else if (requestedSpeed != 0) {
-      Serial.println("------------ DESIRED SPEED INVALID: " + String(requestedSpeed) + " ------------");
+      Serial.println("------------ DESIRED SPEED INVALID: " +
+                     String(requestedSpeed) + " ------------");
     }
   }
 }
@@ -162,13 +161,13 @@ void adjustMotorSpeed() {
   if (desiredSpeed == 0) {
     return;
   }
-  
+
   // Current speed too low
   if (desiredSpeed > speed + 4) {
     if (outputESC < 180) {
       outputESC++;
     }
-  // Current speed too high
+    // Current speed too high
   } else if (desiredSpeed < speed - 4) {
     // Smallest operating level
     if (outputESC > LOWEST_OPERATING_SPEED) {
