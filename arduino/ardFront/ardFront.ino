@@ -9,6 +9,9 @@
 //it also tests client receive by sending data back to the rpi
 
 // time in seconds
+
+#include <ArduinoJson.h>
+
 int timeSec = 1;
 
 void setup() {
@@ -24,7 +27,8 @@ void setup() {
 	    String word = Serial.readString();
         Serial.println(word);
 
-        if (word == "B:") {
+
+        if (word == "B:;") {
 
             digitalWrite(13, HIGH);
             Serial.println("LED:ON");
@@ -47,21 +51,102 @@ void setup() {
 
 void loop() {
 
+    /*
+
+    GETTEMP:;LEDON:;LEDOFF:;
+
+    do {
+        read until first semicolon
+        do somn with that info
+
+        switch (String) {
+
+            case "Emergency":
+
+                getAlarm();
+                if (Alarm) {
+
+                }
+
+            case "GETTEMP":
+                ...
+                break;
+
+
+        }
+
+    } while ( repeat if there is shit left)
+
+    */
+
+    /*
+
+    Uint_8 alarm;
+
+    Emergency:alarm;
+
+
+    */
+
+
+    /*
+
+    var = array[0]
+    var = array[1]
+
+    if (array[0]) {}
+
+    if (array[1]) {}
+
+    */
+
     String word = Serial.readString();
     Serial.println(word);
+/*
+    if (word == "GETTEMP:;") {
 
-    if (word == "LED:ON") {
+        Serial.print("TEMPstat: 500:42.1;");
 
-        digitalWrite(13, HIGH);
-        Serial.println("LEDstat:ON");
+    }
+*/
+    if(word.indexOf("}") > 0) {
 
-        delay(1000);
 
-        digitalWrite(13,LOW);
-        Serial.println("LEDstat:OFF");
+    //char json[] =
+      //"{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
+
+        // Deserialize the JSON document
+
+         StaticJsonDocument<200> doc;
+
+        DeserializationError error = deserializeJson(doc, word);
+
+        // Test if parsing succeeds.
+        if (error) {
+          Serial.print(F("deserializeJson() failed: "));
+          Serial.println(error.f_str());
+          return;
+        }
+
+        // Fetch values.
+        //
+        // Most of the time, you can rely on the implicit casts.
+        // In other case, you can do doc["time"].as<long>();
+        double tempLeft = doc["tempLeft"];
+        double tempRight = doc["tempRight"];
+
+        // Print values.
+
+        Serial.println("beeeeeeeeeeeeeeeeeeeeeep");
+        Serial.println(tempLeft);
+        Serial.println(tempRight);
+
+        delay(100);
+
+
 
     }
 
-    delay(100);
+
 
 }

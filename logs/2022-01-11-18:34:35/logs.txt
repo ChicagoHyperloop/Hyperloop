@@ -1,0 +1,60 @@
+2022-01-11 18:34:36,283 - Hyperlogger - INFO - --------------------------------------args: 2022-01-11-18:34:35
+2022-01-11 18:34:36,286 - Hyperlogger - INFO - initBAUD: 9600 TIMEOUT: 0.1 PATH: /dev/ttyACM0 Encoding: utf-8 
+2022-01-11 18:34:36,287 - Hyperlogger - INFO - initBAUD: 9600 TIMEOUT: 0.1 PATH: /dev/ttyACM1 Encoding: utf-8 
+2022-01-11 18:34:36,288 - Hyperlogger - INFO - Sending /dev/ttyACM0{
+2022-01-11 18:34:36,288 - Hyperlogger - INFO - Sending /dev/ttyACM0"tempLeft"
+2022-01-11 18:34:36,296 - Hyperlogger - INFO - Sending /dev/ttyACM0: 
+2022-01-11 18:34:36,299 - Hyperlogger - INFO - Sending /dev/ttyACM050
+2022-01-11 18:34:36,301 - Hyperlogger - INFO - Sending /dev/ttyACM0, 
+2022-01-11 18:34:36,303 - Hyperlogger - INFO - Sending /dev/ttyACM0"tempRight"
+2022-01-11 18:34:36,315 - Hyperlogger - INFO - Sending /dev/ttyACM0: 
+2022-01-11 18:34:36,316 - Hyperlogger - INFO - Sending /dev/ttyACM053.2
+2022-01-11 18:34:36,321 - Hyperlogger - INFO - Sending /dev/ttyACM0}
+2022-01-11 18:34:36,422 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:36,522 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:36,624 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:36,725 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:36,826 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:36,927 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:37,029 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:37,131 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:37,232 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:37,334 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:37,436 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:37,537 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:37,640 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:37,742 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:37,845 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:37,847 - Hyperlogger - INFO - read /dev/ttyACM1  READY:
+2022-01-11 18:34:37,848 - Hyperlogger - INFO - Sending /dev/ttyACM1B:;
+2022-01-11 18:34:37,948 - Hyperlogger - INFO - read /dev/ttyACM0  READY:
+2022-01-11 18:34:37,949 - Hyperlogger - INFO - Sending /dev/ttyACM0B:;
+2022-01-11 18:34:39,953 - Hyperlogger - INFO - Sending /dev/ttyACM0LED:ON
+2022-01-11 18:34:39,954 - Hyperlogger - INFO - Sending /dev/ttyACM1LED:ON
+2022-01-11 18:34:39,956 - Hyperlogger - INFO - read /dev/ttyACM0  B:;
+2022-01-11 18:34:39,958 - Hyperlogger - INFO - read /dev/ttyACM1  B:;
+2022-01-11 18:34:39,960 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:39,961 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:40,063 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:40,165 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:40,267 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:40,368 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:40,470 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:40,572 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:40,674 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:40,775 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:40,877 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:40,969 - Hyperlogger - INFO - read /dev/ttyACM1  LED:ON
+2022-01-11 18:34:40,972 - Hyperlogger - INFO - read /dev/ttyACM0  LED:ON
+2022-01-11 18:34:41,073 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:41,176 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:41,277 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:41,379 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:41,480 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:41,582 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:41,683 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:41,785 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:41,887 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:41,966 - Hyperlogger - INFO - read /dev/ttyACM0  
+2022-01-11 18:34:41,967 - Hyperlogger - INFO - read /dev/ttyACM1  
+2022-01-11 18:34:42,069 - Hyperlogger - INFO - read /dev/ttyACM0  

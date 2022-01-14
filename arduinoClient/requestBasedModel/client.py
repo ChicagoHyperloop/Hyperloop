@@ -1,9 +1,13 @@
+'''
+this file contains the ardClient class
+which has stuff necessary for communicating with arduino
+and arduino methods and Command stuff
+'''
+
 import logging
 import serial
-import time
 import asyncio
-#import threading
-#TODO: logging to file
+import json
 
 class ardClient:
 
@@ -48,7 +52,8 @@ class ardClient:
 		return data
 
 	def sendCommand(self, prepend = "", data = ""):
-		send = prepend + ":" + data
+
+		send = prepend + ":" + data + ";"
 		self.write(send)
 		print("sending: " + send)
 
@@ -76,6 +81,35 @@ class ardClient:
 			#self.write("LED:ON")
 			self.sendCommand(prepend="LED", data="ON")
 
+
+	def JSONExpirement(self):
+
+		commandDict = {
+
+			"tempLeft":50,
+			"tempRight":53.2
+
+		}
+
+		print(json.dump(fp=self,obj=commandDict))
+
+		'''
+		data = self.read()
+		self.sendCommand(prepend="GETTEMP")
+		while True:
+			data = self.read()
+
+			if "TEMPstat" in data:
+				break
+
+		size = len(data)
+		# remove semicolon
+		data = data[:size - 1]
+
+		listData = data.split(':')
+		return [listData[1], listData[2]]
+		'''
+
 	# untested ------------------------------------------------------------------------------------>>>>
 
 	def begin(self):
@@ -84,8 +118,3 @@ class ardClient:
 	def EStop(self):
 		self.sendCommand(prepend="ES")
 
-	def LEDchange(self):
-		self.sendCommand(prepend="L")
-
-	def basicSensorRefresh(self):
-		self.sendCommand(prepend="S")
