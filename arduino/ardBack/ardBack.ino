@@ -9,6 +9,7 @@
 //it also tests client receive by sending data back to the rpi
 
 //spaghetti
+//death is coming
 
 // time in seconds
 int timeSec = 1;
