@@ -8,6 +8,8 @@
 //the delay between blinks to timesec
 //it also tests client receive by sending data back to the rpi
 
+//spaghetti
+
 // time in seconds
 int timeSec = 1;
 
