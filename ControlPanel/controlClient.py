@@ -16,7 +16,8 @@ class DataModel:
         self.data = {}
 
     def process_data(self, json_data):
-        """Process the JSON data received from the server
+        """
+        Process the JSON data received from the server
         
         Args:
             json_data (str): The JSON data received from the server
@@ -28,7 +29,8 @@ class DataModel:
 class Client:
 
     def __init__(self, host, port):
-        """Initialize the client socket and connect to the server
+        """
+        Initialize the client socket and connect to the server
 
         Args:
             host (str): The host address of the server
@@ -39,7 +41,8 @@ class Client:
         self.client_socket.connect((host, port))
 
     def send_command(self, command):
-        """Send a command to the server
+        """
+        Send a command to the server
 
         Args:
             command (str): The command to be sent to the server
@@ -53,7 +56,8 @@ class Client:
         print('Received from server: ' + data.decode('utf-8').rstrip())
 
     def receive_data(self):
-        """Receive JSON data from the server
+        """
+        Receive JSON data from the server
 
         Returns:
             str: The JSON data received from the server
