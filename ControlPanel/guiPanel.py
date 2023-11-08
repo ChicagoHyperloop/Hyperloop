@@ -24,8 +24,17 @@ class ControlPanel:
         # Set the geometry of the root window to be Full Screen
         root.geometry(f'{root.winfo_screenwidth()-10}x{root.winfo_screenheight()}')
 
+        # Configure Root Bindings for Universal Control
+        root.bind('<Escape>', self.exitWindow)
+
         # Create the main frame
         mainframe = ttk.Frame(root, padding='5')
+
+    def exitWindow(self, *args):
+        """Close the Control Panel Window Using Escape Key"""
+        self.client.send_command('exit')
+        self.client.close()
+        root.quit()
 
 root = Tk()
 
