@@ -36,6 +36,34 @@ class ControlPanel:
         self.client.close()
         root.quit()
 
+    def update_data(self):
+        """
+        This will be a function that constantly takes in data from the server
+        and processes the data that we just received
+
+        Considering this, it will be an infinite loop within a thread of the gui
+        """
+        while True:
+            json_data = self.client.receive_data()
+            self.data_model.process_data(json_data)
+    
+    def process_data(self, json_data):
+        """
+        Process the JSON data received from the server
+        
+        Args:
+            json_data (str): The JSON data received from the server
+
+        """
+        self.data_model.process_data(json_data)
+        self.update_labels()
+
+    def update_labels(self):
+        """Update the labels with the data from the data model"""
+        # Update the labels with the data from the data model
+        # !!!Need to update the labels with the data from the data model!!!
+        pass
+
 root = Tk()
 
 ControlPanel(root)
