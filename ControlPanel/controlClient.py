@@ -27,3 +27,6 @@ class Client:
         # Terminal will print the feedback from the server (for debugging purposes)
         print('Received from server: ' + data.decode('utf-8').rstrip())
 
+    def close_connection(self):
+        """Close the client socket"""
+        self.client_socket.close()
