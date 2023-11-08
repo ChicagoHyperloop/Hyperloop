@@ -15,6 +15,15 @@ class DataModel:
         # Dictionary to store the data received from the server
         self.data = {}
 
+    def process_data(self, json_data):
+        """Process the JSON data received from the server
+        
+        Args:
+            json_data (str): The JSON data received from the server
+
+        """
+        self.data = json.loads(json_data)
+
 
 class Client:
 
