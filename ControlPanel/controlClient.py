@@ -1,4 +1,20 @@
 import socket
+import json
+
+class DataModel:
+    '''
+    Abstract Idea for this Data Model Class:
+    - This class will be used to store the data received from the server
+    - The data will be stored in a dictionary
+      - This way the data is easily accessible for the GUI
+    - This class will also handle any change in the data from the server
+    '''
+
+    def __init__(self):
+        """Initialize the data model"""
+        # Dictionary to store the data received from the server
+        self.data = {}
+
 
 class Client:
 
@@ -26,6 +42,18 @@ class Client:
         data = self.client_socket.recv(1024)
         # Terminal will print the feedback from the server (for debugging purposes)
         print('Received from server: ' + data.decode('utf-8').rstrip())
+
+    def receive_data(self):
+        """Receive JSON data from the server
+
+        Returns:
+            str: The JSON data received from the server
+
+        """
+        data = self.client_socket.recv(1024)
+        # Terminal will print the feedback from the server (for debugging purposes)
+        print('Received from server: ' + data.decode('utf-8').rstrip())
+        return data.decode('utf-8').rstrip()
 
     def close_connection(self):
         """Close the client socket"""
