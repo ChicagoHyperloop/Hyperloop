@@ -51,9 +51,9 @@ class Client:
         # Working with Java server, so newline character is needed for command processing
         command += '\n'
         self.client_socket.send(command.encode('utf-8'))
-        data = self.client_socket.recv(1024)
+        # data = self.client_socket.recv(1024)
         # Terminal will print the feedback from the server (for debugging purposes)
-        print('Received from server: ' + data.decode('utf-8').rstrip())
+        # print('Received from server: ' + data.decode('utf-8').rstrip())
 
     def receive_data(self):
         """

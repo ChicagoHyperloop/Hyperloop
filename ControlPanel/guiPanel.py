@@ -1,11 +1,12 @@
 from tkinter import *
 from tkinter import ttk
+import threading
 from controlClient import Client
 from controlClient import DataModel
 
 class ControlPanel:
 
-    def __init__(self, root, host='local', port=8049):
+    def __init__(self, root, host='localhost', port=8049):
         """
         Initialize the GUI
         
@@ -26,15 +27,53 @@ class ControlPanel:
 
         # Configure Root Bindings for Universal Control
         root.bind('<Escape>', self.exitWindow)
+        root.bind('<space>', self.toggleBrakes)
+
+        # Create the variables needed for labels and data
+        self.brake_activated = BooleanVar(value=False)
+        self.brake_activated_text = StringVar(value='Off')
+        self.brake_temperature = IntVar(value=0)
+        self.speed = IntVar(value=0)
+
+        # Create thread for constantly updating values from the server
+        data_thread = threading.Thread(target=self.update_data, daemon=True)
+        data_thread.start()
 
         # Create the main frame
         mainframe = ttk.Frame(root, padding='5')
+
+        ### Create Labels for Displaying Data
+        # Create a Brake Status Label
+        brake_status_label = ttk.Label(mainframe, text='Brake Status')
+        brake_status_label.pack(pady=10)
+        brake_status_variable_label = ttk.Label(mainframe, textvariable=self.brake_activated_text)
+        brake_status_variable_label.pack(pady=10)
+        # Create a Brake Temperature Label
+        brake_temperature_label = ttk.Label(mainframe, text='Brake Temperature')
+        brake_temperature_label.pack(pady=10)
+        brake_temperature_variable_label = ttk.Label(mainframe, textvariable=self.brake_temperature)
+        brake_temperature_variable_label.pack(pady=10)
+        # Create a Speed Label
+        speed_label = ttk.Label(mainframe, text='Speed')
+        speed_label.pack(pady=10)
+        speed_variable_label = ttk.Label(mainframe, textvariable=self.speed)
+        speed_variable_label.pack(pady=10)
+
+        # Pack the main frame
+        mainframe.pack()
 
     def exitWindow(self, *args):
         """Close the Control Panel Window Using Escape Key"""
         self.client.send_command('exit')
         self.client.close()
         root.quit()
+
+    def toggleBrakes(self, *args):
+        """Toggle the brakes for the pod"""
+        if self.brake_activated.get():
+            self.client.send_command('Brakes: Off')
+        else:
+            self.client.send_command('Brakes: On')
 
     def update_data(self):
         """
@@ -45,7 +84,7 @@ class ControlPanel:
         """
         while True:
             json_data = self.client.receive_data()
-            self.data_model.process_data(json_data)
+            self.process_data(json_data)
     
     def process_data(self, json_data):
         """
@@ -60,9 +99,15 @@ class ControlPanel:
 
     def update_labels(self):
         """Update the labels with the data from the data model"""
-        # Update the labels with the data from the data model
-        # !!!Need to update the labels with the data from the data model!!!
-        pass
+        self.brake_activated.set(self.data_model.data['brakes']['activated'])
+        self.brake_temperature.set(self.data_model.data['brakes']['temperature'])
+        self.speed.set(self.data_model.data['speed'])
+
+        # Update the brake status text
+        if self.brake_activated.get():
+            self.brake_activated_text.set('On')
+        else:
+            self.brake_activated_text.set('Off')
 
 root = Tk()
 
