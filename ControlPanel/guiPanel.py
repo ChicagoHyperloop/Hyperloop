@@ -22,12 +22,15 @@ class ControlPanel:
 
         # Initialize the root window and set the title
         root.title('Hyper Loop Chicago Control Pod')
-        # Set the geometry of the root window to be Full Screen
+        # Set the geometry of the root window to be Full Screen and Resizeable
         root.geometry(f'{root.winfo_screenwidth()-10}x{root.winfo_screenheight()}')
+        root.resizable(True, True)
 
         # Configure Root Bindings for Universal Control
         root.bind('<Escape>', self.exitWindow)
         root.bind('<space>', self.toggleBrakes)
+        root.bind('<Up>', self.increaseSpeed)
+        root.bind('<Down>', self.decreaseSpeed)
 
         # Create the variables needed for labels and data
         self.brake_activated = BooleanVar(value=False)
@@ -62,6 +65,10 @@ class ControlPanel:
         # Pack the main frame
         mainframe.pack()
 
+
+    #############################################################
+    #               CONTROL/BIND FUNCTIONS
+    #############################################################
     def exitWindow(self, *args):
         """Close the Control Panel Window Using Escape Key"""
         self.client.send_command('exit')
@@ -74,7 +81,19 @@ class ControlPanel:
             self.client.send_command('Brakes: Off')
         else:
             self.client.send_command('Brakes: On')
+    
+    def increaseSpeed(self, *args):
+        """Increase the speed of the pod"""
+        self.client.send_command('Accelerate')
 
+    def decreaseSpeed(self, *args):
+        """Decrease the speed of the pod"""
+        self.client.send_command('Decelerate')
+
+
+    #############################################################
+    #               DATA PROCESSING FUNCTIONS
+    #############################################################
     def update_data(self):
         """
         This will be a function that constantly takes in data from the server
@@ -108,6 +127,7 @@ class ControlPanel:
             self.brake_activated_text.set('On')
         else:
             self.brake_activated_text.set('Off')
+
 
 root = Tk()
 
