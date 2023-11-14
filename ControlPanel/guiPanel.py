@@ -1,8 +1,16 @@
 from tkinter import *
 from tkinter import ttk
 import threading
+from threading import Event
 from controlClient import Client
 from controlClient import DataModel
+
+'''
+TODO: Find out what data is going to be used for the Pod, and then
+      how we want to display this data in a meaningful way.
+      - Work on discovering data set
+      - Work on displaying data set
+'''
 
 class ControlPanel:
 
@@ -15,8 +23,15 @@ class ControlPanel:
             host (str): The host address of the server, default: localhost
             port (int): The port number of the server, default: 8049
         """
+
+        '''
+        TODO: Be able to run this GUI without the server running, so that
+              it can wait for a connection rather than needed a connection.
+              This way, order of starting the server and GUI doesn't matter.
+              Making it much simpler to use.
+        '''
+
         # Initialize the client socket and data model
-        # !!!As of right now, server needs to be running first before client is created!!!
         self.client = Client(host, port)
         self.data_model = DataModel()
 
@@ -39,6 +54,7 @@ class ControlPanel:
         self.speed = IntVar(value=0)
 
         # Create thread for constantly updating values from the server
+        self.stop_event = Event()
         data_thread = threading.Thread(target=self.update_data, daemon=True)
         data_thread.start()
 
@@ -71,9 +87,13 @@ class ControlPanel:
     #############################################################
     def exitWindow(self, *args):
         """Close the Control Panel Window Using Escape Key"""
+        self.stop_event.set()
+        remaining_data = self.client.receive_data()
+        while remaining_data:
+            remaining_data = self.client.receive_data()
         self.client.send_command('exit')
-        self.client.close()
-        root.quit()
+        self.client.close_connection()
+        root.after(100, root.quit)
 
     def toggleBrakes(self, *args):
         """Toggle the brakes for the pod"""
@@ -94,6 +114,22 @@ class ControlPanel:
     #############################################################
     #               DATA PROCESSING FUNCTIONS
     #############################################################
+    '''
+    TODO: Somehow make it so that data is only updated if there is a change.
+          Also, if there is a change, only update the label that changed, 
+          rather than assigning all the labels to the data model values.
+          Theoretically, this will make the GUI more efficient, making data
+          processing much faster and a more responsive GUI. Especially when
+          the GUI will start plotting data.
+          Possible Data Plotting Libraries:
+            - matplotlib **(Current Plan)**
+            - PyQTGraph **(Very Promising)**
+            - Plotly
+            - PyPlot
+            - Bokeh
+            - Seaborn
+    '''
+
     def update_data(self):
         """
         This will be a function that constantly takes in data from the server
@@ -101,9 +137,12 @@ class ControlPanel:
 
         Considering this, it will be an infinite loop within a thread of the gui
         """
-        while True:
+        # Run continously until "threading" event is stopped upon exiting the GUI
+        while not self.stop_event.is_set():
             json_data = self.client.receive_data()
-            self.process_data(json_data)
+            # Also, only process data if actual data was received
+            if json_data is not None:
+                self.process_data(json_data)
     
     def process_data(self, json_data):
         """
@@ -113,8 +152,8 @@ class ControlPanel:
             json_data (str): The JSON data received from the server
 
         """
-        self.data_model.process_data(json_data)
-        self.update_labels()
+        self.data_model.process_data(json_data) # Updates the data model
+        self.update_labels() # Updates the labels with new data in the model
 
     def update_labels(self):
         """Update the labels with the data from the data model"""
