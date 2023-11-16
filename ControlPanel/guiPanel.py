@@ -4,12 +4,21 @@ import threading
 from threading import Event
 from controlClient import Client
 from controlClient import DataModel
+import time
 
 '''
 TODO: Find out what data is going to be used for the Pod, and then
       how we want to display this data in a meaningful way.
       - Work on discovering data set
       - Work on displaying data set
+'''
+
+'''
+NOTE: The GUI works with the server and it works without a server connection,
+      it can successfully wait for connection, however while implementing this
+      some OSErrors occur but are handled, and when handled the application runs
+      as supposed to in conjunction with server.
+      - Just slightly annoying seeing the OSErrors popping up in the terminal.
 '''
 
 class ControlPanel:
@@ -23,29 +32,22 @@ class ControlPanel:
             host (str): The host address of the server, default: localhost
             port (int): The port number of the server, default: 8049
         """
-
-        '''
-        TODO: Be able to run this GUI without the server running, so that
-              it can wait for a connection rather than needed a connection.
-              This way, order of starting the server and GUI doesn't matter.
-              Making it much simpler to use.
-        '''
-
-        # Initialize the client socket and data model
-        self.client = Client(host, port)
-        self.data_model = DataModel()
-
         # Initialize the root window and set the title
         root.title('Hyper Loop Chicago Control Pod')
         # Set the geometry of the root window to be Full Screen and Resizeable
         root.geometry(f'{root.winfo_screenwidth()-10}x{root.winfo_screenheight()}')
         root.resizable(True, True)
 
-        # Configure Root Bindings for Universal Control
-        root.bind('<Escape>', self.exitWindow)
-        root.bind('<space>', self.toggleBrakes)
-        root.bind('<Up>', self.increaseSpeed)
-        root.bind('<Down>', self.decreaseSpeed)
+        # Create a Toplevel window for connection status
+        self.connection_frame = ttk.Frame(root, padding='5')
+        self.connection_text = StringVar()
+        self.connection_label = ttk.Label(self.connection_frame, textvariable=self.connection_text)
+        self.connection_label.pack()
+        self.connection_frame.pack()
+
+        # Initialize the client socket and data model
+        self.client = None
+        self.data_model = None
 
         # Create the variables needed for labels and data
         self.brake_activated = BooleanVar(value=False)
@@ -55,31 +57,68 @@ class ControlPanel:
 
         # Create thread for constantly updating values from the server
         self.stop_event = Event()
-        data_thread = threading.Thread(target=self.update_data, daemon=True)
-        data_thread.start()
+        self.stop_event.set()
 
         # Create the main frame
-        mainframe = ttk.Frame(root, padding='5')
+        self.mainframe = ttk.Frame(root, padding='5')
 
         ### Create Labels for Displaying Data
         # Create a Brake Status Label
-        brake_status_label = ttk.Label(mainframe, text='Brake Status')
+        brake_status_label = ttk.Label(self.mainframe, text='Brake Status')
         brake_status_label.pack(pady=10)
-        brake_status_variable_label = ttk.Label(mainframe, textvariable=self.brake_activated_text)
+        brake_status_variable_label = ttk.Label(self.mainframe, textvariable=self.brake_activated_text)
         brake_status_variable_label.pack(pady=10)
         # Create a Brake Temperature Label
-        brake_temperature_label = ttk.Label(mainframe, text='Brake Temperature')
+        brake_temperature_label = ttk.Label(self.mainframe, text='Brake Temperature')
         brake_temperature_label.pack(pady=10)
-        brake_temperature_variable_label = ttk.Label(mainframe, textvariable=self.brake_temperature)
+        brake_temperature_variable_label = ttk.Label(self.mainframe, textvariable=self.brake_temperature)
         brake_temperature_variable_label.pack(pady=10)
         # Create a Speed Label
-        speed_label = ttk.Label(mainframe, text='Speed')
+        speed_label = ttk.Label(self.mainframe, text='Speed')
         speed_label.pack(pady=10)
-        speed_variable_label = ttk.Label(mainframe, textvariable=self.speed)
+        speed_variable_label = ttk.Label(self.mainframe, textvariable=self.speed)
         speed_variable_label.pack(pady=10)
 
+        threading.Thread(target=self.initialize_client, args=(root, host, port), daemon=True).start()
+
+
+    #############################################################
+    #              INITIALIZATION FUNCTIONS
+    #############################################################
+    def initialize_client(self, root, host, port):
+        """Initialize the client socket"""
+        i = 0
+        while True:
+            try:
+                # Attempt to initialize the client socket and data model
+                self.client = Client(host, port)
+                self.data_model = DataModel()
+                self.client.send_command('ready')
+                break
+            except ConnectionRefusedError:
+                self.connection_text.set('Connection Refused. Waiting for Server to Start' + ('.' * (i%4)))
+                i += 1
+                time.sleep(0.5)
+                continue
+
+        self.connection_text.set('Connection Successful. Starting Control Panel...')
+        time.sleep(2)
+        self.connection_frame.destroy()
+
+        # Configure Root Bindings for Universal Control
+        root.bind('<Escape>', self.exitWindow)
+        root.bind('<space>', self.toggleBrakes)
+        root.bind('<Up>', self.increaseSpeed)
+        root.bind('<Down>', self.decreaseSpeed)
+
         # Pack the main frame
-        mainframe.pack()
+        self.mainframe.pack()
+
+        self.stop_event.clear()
+        # Create thread for constantly updating values from the server
+        threading.Thread(target=self.update_data, daemon=True).start()
+
+        root.update()
 
 
     #############################################################
@@ -139,10 +178,15 @@ class ControlPanel:
         """
         # Run continously until "threading" event is stopped upon exiting the GUI
         while not self.stop_event.is_set():
-            json_data = self.client.receive_data()
+            received_data = self.client.receive_data()
+
+            if not received_data or len(received_data.split('\n')) > 1:
+                print('Waiting on Connection')
+                continue
             # Also, only process data if actual data was received
-            if json_data is not None:
-                self.process_data(json_data)
+            if received_data:
+                # print('json_data: ' + received_data)
+                self.process_data(received_data)
     
     def process_data(self, json_data):
         """
