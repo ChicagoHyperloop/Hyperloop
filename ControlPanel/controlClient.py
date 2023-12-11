@@ -14,14 +14,18 @@ class DataModel:
         """Initialize the data model"""
         # Dictionary to store the data received from the server
         self.data = {}
+        # Dictionary to store the data from previous update, used to track changes
+        self.prevData = {}
 
     def process_data(self, json_data):
         """
+        Update the previous data model to match current, and then
         Process the JSON data received from the server
         
         Args:
             json_data (str): The JSON data received from the server
         """
+        self.prevData = self.data
         self.data = json.loads(json_data)
 
 
