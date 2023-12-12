@@ -1,10 +1,21 @@
+### Tkinter Imports ###
+import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+### Matplotlib Imports ###
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+### Threading Imports ###
 import threading
 from threading import Event
+### Time Imports ###
+import time
+### Client Side Imports ###
 from controlClient import Client
 from controlClient import DataModel
-import time
 
 '''
 TODO: Find out what data is going to be used for the Pod, and then
@@ -52,7 +63,7 @@ class ControlPanel:
         # Create the variables needed for labels and data
         self.brake_activated = BooleanVar(value=False)
         self.brake_activated_text = StringVar(value='Off')
-        self.brake_temperature = IntVar(value=0)
+        self.brake_temperature = DoubleVar(value=0)
         self.speed = IntVar(value=0)
 
         # Create thread for constantly updating values from the server
@@ -73,6 +84,24 @@ class ControlPanel:
         brake_temperature_label.pack(pady=10)
         brake_temperature_variable_label = ttk.Label(self.mainframe, textvariable=self.brake_temperature)
         brake_temperature_variable_label.pack(pady=10)
+        
+        # Create a Matplotlib figure and axis
+        fig, ax = plt.subplots()
+        self.bar = ax.bar([''], [self.brake_temperature.get()], color='skyblue')
+        # ax.set_xlabel('Sources')
+        ax.set_ylabel('Temperature (Celsius)')
+        ax.set_title('Brake Temperature')
+        ax.set_ylim(0, 200)
+        # Create a Matplotlib canvas for embedding in Tkinter
+        self.canvas = FigureCanvasTkAgg(fig, master=self.mainframe)
+        canvas_widget = self.canvas.get_tk_widget()
+        canvas_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        # Create a colormap for gradient effect
+        self.cmap = LinearSegmentedColormap.from_list('custom_gradient', ['blue', 'skyblue', 'lightblue', 'white', 'yellow', 'orange', 'red', 'darkred'])
+        # Set background color of canvas to be same as tkinter application
+        fig.patch.set_facecolor(root.cget('bg'))
+        ax.patch.set_facecolor(root.cget('bg'))
+
         # Create a Speed Label
         speed_label = ttk.Label(self.mainframe, text='Speed')
         speed_label.pack(pady=10)
@@ -151,6 +180,11 @@ class ControlPanel:
 
 
     #############################################################
+    #                   ANIMATION FUNCTIONS
+    #############################################################
+   
+
+    #############################################################
     #               DATA PROCESSING FUNCTIONS
     #############################################################
     '''
@@ -210,6 +244,12 @@ class ControlPanel:
             self.brake_activated_text.set('On')
         else:
             self.brake_activated_text.set('Off')
+
+        normalized_height = self.brake_temperature.get() / 200.0
+        for bar_ in self.bar:
+            bar_.set_height(self.brake_temperature.get())
+            bar_.set_color(self.cmap(normalized_height))
+        self.canvas.draw()
 
 
 root = Tk()

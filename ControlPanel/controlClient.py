@@ -64,7 +64,7 @@ class Client:
         # Try to receive data from the server
         try:
             ### REVISIT THIS AS MORE DATA WILL BE MORE PROGRAM INTENSIVE
-            self.client_socket.settimeout(0.065)  # Set a timeout of 0.025 seconds vs server sleep of 0.070 seconds
+            self.client_socket.settimeout(0.01)  # Set a timeout of 0.025 seconds vs server sleep of 0.070 seconds
             data = self.client_socket.recv(1024)
             print('Received from server: ' + data.decode('utf-8').rstrip()) # Get terminal feedback of data stream
             return data.decode('utf-8').rstrip()
