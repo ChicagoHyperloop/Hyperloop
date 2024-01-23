@@ -5,15 +5,15 @@
 
 #arduino Front compile and upload
 echo "front compile"
-arduino-cli compile --fqbn arduino:avr:uno ardFront
+./arduino-cli compile --fqbn arduino:avr:uno ardFront
 echo "front upload"
-arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:uno ardFront
+./arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:uno ardFront
 
 #arduino Back compile and upload
 echo "back compile"
-arduino-cli compile --fqbn arduino:avr:uno ardBack
+./arduino-cli compile --fqbn arduino:avr:uno ardBack
 echo "back upload"
-arduino-cli upload -p /dev/ttyACM1 --fqbn arduino:avr:uno ardBack
+./arduino-cli upload -p /dev/ttyACM1 --fqbn arduino:avr:uno ardBack
 
 #arduino power compile and upload
 #echo "power compile"

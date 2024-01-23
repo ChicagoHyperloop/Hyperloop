@@ -1,69 +1,37 @@
-//this sketch is a test to blink an LED on an arduino
-//this tests if we can upload code from the Rpi to the arduino
-//programmed on WSLS(ubuntu) ssh into Rpi and ubuntu ssh
+/*
+  Blink
 
-//this program is a modified blink
-//the arduino waits for a int input from the rpi
-//if the arduino recieves an int input from the rpi it changes
-//the delay between blinks to timesec
-//it also tests client receive by sending data back to the rpi
+  Turns an LED on for one second, then off for one second, repeatedly.
 
-//spaghetti
+  Most Arduinos have an on-board LED you can control. On the UNO, MEGA and ZERO
+  it is attached to digital pin 13, on MKR1000 on pin 6. LED_BUILTIN is set to
+  the correct LED pin independent of which board is used.
+  If you want to know what pin the on-board LED is connected to on your Arduino
+  model, check the Technical Specs of your board at:
+  https://www.arduino.cc/en/Main/Products
 
-// time in seconds
-int timeSec = 1;
+  modified 8 May 2014
+  by Scott Fitzgerald
+  modified 2 Sep 2016
+  by Arturo Guadalupi
+  modified 8 Sep 2016
+  by Colby Newman
 
+  This example code is in the public domain.
+
+  https://www.arduino.cc/en/Tutorial/BuiltInExamples/Blink
+*/
+
+// the setup function runs once when you press reset or power the board
 void setup() {
-
-	Serial.begin(9600);
-	pinMode(13,OUTPUT);
-
-    Serial.println("READY:");
-
-    // begin Codes
-	while (true) {
-
-	    String word = Serial.readString();
-        Serial.println(word);
-
-        if (word == "B:") {
-
-            digitalWrite(13, HIGH);
-            Serial.println("LED:ON");
-            delay(500);
-            digitalWrite(13, LOW);
-            Serial.println("LED:OFF");
-            delay(500);
-            digitalWrite(13, HIGH);
-            Serial.println("LED:ON");
-            delay(500);
-            digitalWrite(13, LOW);
-            Serial.println("LED:OFF");
-
-            break;
-
-        }
-
-	}
+  // initialize digital pin LED_BUILTIN as an output.
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
+// the loop function runs over and over again forever
 void loop() {
-
-    String word = Serial.readString();
-    Serial.println(word);
-
-    if (word == "LED:ON") {
-
-        digitalWrite(13, HIGH);
-        Serial.println("LEDstat:ON");
-
-        delay(1000);
-
-        digitalWrite(13,LOW);
-        Serial.println("LEDstat:OFF");
-
-    }
-
-    delay(100);
-
+  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+  delay(2000);                      // wait for a second
+  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
+  delay(2000);                      // wait for a second
 }
