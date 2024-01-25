@@ -9,6 +9,7 @@
 //it also tests client receive by sending data back to the rpi
 
 // time in seconds
+/*
 int timeSec = 1;
 
 void setup() {
@@ -65,3 +66,4 @@ void loop() {
     delay(100);
 
 }
+*/

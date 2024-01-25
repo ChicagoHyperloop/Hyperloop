@@ -1,54 +1,40 @@
+// jSerialComm read keyboard and transmit to COM port - read response
+
+// compile and run commands - note that jSerialComm-1.3.11.jar should be in same directory as .java file
+// javac -cp F:\Programming\JAVA\JSerialComm\jSerialComm-1.3.11.jar;.  SimpleTerminal.java
+// java -cp F:\Programming\JAVA\JSerialComm\jSerialComm-1.3.11.jar;.  SimpleTerminal
 package org.example;
 
 import com.fazecast.jSerialComm.*;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
 public class Main {
+    public static void main(String[] args) {
 
-    public static SerialPort ardPort1;
+        Scanner console = new Scanner(System.in);
+        System.out.println("List COM ports");
+        SerialPort comPorts[] = SerialPort.getCommPorts();
 
-    public static void main(String[] args) throws IOException {
+        arduino[] ards = new arduino[comPorts.length];
 
+        for (int i = 0; i < comPorts.length; i++) {
+            ards[i] = new arduino(comPorts[i]);
 
-        SerialPort[] allports = SerialPort.getCommPorts();
+            try {
+                while (true) {
+                    // if keyboard token entered read it
+                    if (System.in.available() > 0) {
+                        ards[i].write(console.nextLine() + "\n");
+                    }
+                    // read serial port  and display data
+                    int byteCount = ards[i].getBytesAvailable();
+                    String inputMSG = ards[i].readString(byteCount);
+                    System.out.print(inputMSG);
 
-        for (SerialPort sp : allports) {
-            System.out.println(sp.getDescriptivePortName() + " - " + sp.getSystemPortPath());
-        }
-
-        ardPort1 = allports[0];    // /dev.cu.usbmodem1101 on Pranav's computer
-        ardPort1.openPort();
-
-
-        InputStream ardin = ardPort1.getInputStream();
-        OutputStream ardout = ardPort1.getOutputStream();
-
-        System.out.println("Connection to Arduino 1 established");
-
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            System.out.println("Press 1 to start and 0 to stop");
-            String comm = scanner.nextLine();
-            System.out.println(comm);
-            //comm.trim();
-
-            if (Objects.equals(comm, "1")) {
-                ardout.write("START\n".getBytes());
-                System.out.println("Thing is on");
-
-            } else if (Objects.equals(comm, "0")) {
-
-	       ardout.write("STOP\n".getBytes());
-                System.out.println("Thing is off");
-
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
